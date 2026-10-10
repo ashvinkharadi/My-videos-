@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Videos</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0b0f;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 22px 18px;
+  background: #15151d;
+  border-bottom: 1px solid #292936;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 25px;
+}
+
+header p {
+  color: #a5a5b5;
+  margin-bottom: 0;
+}
+
+.container {
+  padding: 18px;
+}
+
+.notice {
+  background: #191925;
+  border: 1px solid #303047;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #c9c9d7;
+  line-height: 1.5;
+}
+
+.video-card {
+  background: #171720;
+  border: 1px solid #30303e;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.thumbnail {
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #29294a, #10101a);
+  font-size: 48px;
+}
+
+.video-info {
+  padding: 15px;
+}
+
+.video-info h3 {
+  margin: 0 0 10px;
+}
+
+.video-info p {
+  color: #a5a5b5;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 13px;
+  border: 0;
+  border-radius: 9px;
+  background: #38c77b;
+  color: #07170d;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+button:active {
+  opacity: 0.8;
+}
+
+#playerSection {
+  display: none;
+  margin-top: 20px;
+}
+
+video {
+  width: 100%;
+  border-radius: 12px;
+  background: black;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #77778b;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎬 My Videos</h1>
+  <p>Your video library</p>
+</header>
+
+<div class="container">
+
+  <div class="notice">
+    👋 Welcome!<br>
+    Select a video below to get started.
+  </div>
+
+  <div id="videoList"></div>
+
+  <section id="playerSection">
+    <h3 id="playerTitle">Video Player</h3>
+    <video id="videoPlayer" controls playsinline></video>
+    <p id="playerMessage"></p>
+    <button onclick="closePlayer()">Close Video</button>
+  </section>
+
+</div>
+
+<footer>
+  My Videos · Telegram Mini App
+</footer>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
+/*
+Add your videos here.
+
+Replace the example URL with a direct video URL
+that you own or have permission to use.
+
+This first version is only a demo.
+Real advertisement verification and secure
+per-video unlocking will be added separately.
+*/
+
+const videos = [
+  {
+    id: 1,
+    title: "My First Video",
+    description: "Your video will appear here.",
+    url: ""
+  },
+  {
+    id: 2,
+    title: "My Second Video",
+    description: "Another video in your library.",
+    url: ""
+  }
+];
+
+const list = document.getElementById("videoList");
+
+videos.forEach(video => {
+  const card = document.createElement("div");
+  card.className = "video-card";
+
+  card.innerHTML = `
+    <div class="thumbnail">▶️</div>
+    <div class="video-info">
+      <h3></h3>
+      <p></p>
+      <button type="button">▶ Watch Video</button>
+    </div>
+  `;
+
+  card.querySelector("h3").textContent = video.title;
+  card.querySelector("p").textContent = video.description;
+
+  card.querySelector("button").addEventListener("click", () => {
+    openVideo(video);
+  });
+
+  list.appendChild(card);
+});
+
+function openVideo(video) {
+  if (!video.url) {
+    alert("This video has not been added yet.");
+    return;
+  }
+
+  document.getElementById("playerTitle").textContent = video.title;
+  document.getElementById("playerSection").style.display = "block";
+
+  const player = document.getElementById("videoPlayer");
+  player.src = video.url;
+
+  player.play().catch(() => {
+    document.getElementById("playerMessage").textContent =
+      "Tap the play button to start the video.";
+  });
+
+  document.getElementById("playerSection").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function closePlayer() {
+  const player = document.getElementById("videoPlayer");
+  player.pause();
+  player.removeAttribute("src");
+  player.load();
+
+  document.getElementById("playerSection").style.display = "none";
+}
+</script>
+
+</body>
+</html>
